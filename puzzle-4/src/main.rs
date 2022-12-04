@@ -1,9 +1,8 @@
 use std::{
-    collections::HashSet,
     error::Error,
     fs::File,
     io::{BufRead, BufReader},
-    ops::{Range, RangeInclusive},
+    ops::RangeInclusive,
 };
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -11,6 +10,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let reader = BufReader::new(input);
 
     let mut p1_acc = 0;
+    let mut p2_acc = 0;
 
     for line in reader.lines() {
         let line = line?;
@@ -23,9 +23,18 @@ fn main() -> Result<(), Box<dyn Error>> {
         {
             p1_acc += 1;
         }
+
+        if r1.contains(r2.start())
+            || r1.contains(r2.end())
+            || r2.contains(r1.start())
+            || r2.contains(r1.end())
+        {
+            p2_acc += 1;
+        }
     }
 
     println!("Part 1: {p1_acc}");
+    println!("Part 2: {p2_acc}");
 
     Ok(())
 }
