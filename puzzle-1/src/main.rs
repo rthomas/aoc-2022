@@ -29,7 +29,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     assert!(totals.len() >= 3);
     totals.sort_by(|a, b| b.cmp(a));
-    println!("Part 2: {}", totals[0] + totals[1] + totals[2]);
+    println!("Part 2: {}", totals[0..3].iter().sum::<u32>());
 
     Ok(())
 }
