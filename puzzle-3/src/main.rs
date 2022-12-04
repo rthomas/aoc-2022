@@ -15,23 +15,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     for line in reader.lines() {
         let line = line?;
-        let mut p2_comp = HashSet::with_capacity(line.len());
-        for c in line.chars() {
-            p2_comp.insert(c);
-        }
-        p2_lines.push(p2_comp);
+
+        p2_lines.push(line.chars().collect::<HashSet<char>>());
 
         let parts = line.split_at(line.len() / 2);
-
-        let mut comp1 = HashSet::with_capacity(line.len() / 2);
-        for c in parts.0.chars() {
-            comp1.insert(c);
-        }
-
-        let mut comp2 = HashSet::with_capacity(line.len() / 2);
-        for c in parts.1.chars() {
-            comp2.insert(c);
-        }
+        let comp1 = parts.0.chars().collect::<HashSet<char>>();
+        let comp2 = parts.1.chars().collect::<HashSet<char>>();
 
         let mut intersection = comp1.intersection(&comp2);
         let c = intersection
