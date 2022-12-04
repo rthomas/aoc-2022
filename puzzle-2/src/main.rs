@@ -7,22 +7,52 @@ use std::{
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let input = File::open("./input")?;
     let reader = BufReader::new(input);
-    let mut score: u32 = 0;
+    let mut part1_score: u32 = 0;
+    let mut part2_score: u32 = 0;
 
     for line in reader.lines() {
         let line = line?;
         let mut vals = line.split(" ");
         let them = vals.next().expect("invalid input").into();
-        let me = vals.next().expect("invalid input").into();
-        score += get_score(them, me) as u32;
+        let col2 = vals.next().expect("invalid input");
+        let me = col2.into();
+        part1_score += get_score(them, me) as u32;
+
+        // part 2
+        part2_score += match col2 {
+            "X" => {
+                // lose
+                let me = &match them {
+                    RPS::Rock => RPS::Scissors,
+                    RPS::Paper => RPS::Rock,
+                    RPS::Scissors => RPS::Paper,
+                };
+                get_score(them, me)
+            }
+            "Y" => {
+                // draw
+                get_score(them, them)
+            }
+            "Z" => {
+                // win
+                let me = &match them {
+                    RPS::Rock => RPS::Paper,
+                    RPS::Paper => RPS::Scissors,
+                    RPS::Scissors => RPS::Rock,
+                };
+                get_score(them, me)
+            }
+            _ => panic!("invalid input: {col2}"),
+        } as u32;
     }
 
-    println!("Part 1: {score}");
+    println!("Part 1: {part1_score}");
+    println!("Part 2: {part2_score}");
 
     Ok(())
 }
 
-fn get_score(them: RPS, me: RPS) -> u8 {
+fn get_score(them: &RPS, me: &RPS) -> u8 {
     if them > me {
         // loss
         me.score()
@@ -68,12 +98,12 @@ impl PartialOrd for RPS {
     }
 }
 
-impl From<&str> for RPS {
+impl From<&str> for &RPS {
     fn from(s: &str) -> Self {
         match s {
-            "A" | "X" => RPS::Rock,
-            "B" | "Y" => RPS::Paper,
-            "C" | "Z" => RPS::Scissors,
+            "A" | "X" => &RPS::Rock,
+            "B" | "Y" => &RPS::Paper,
+            "C" | "Z" => &RPS::Scissors,
             _ => panic!("unexpected value: {s}"),
         }
     }
